@@ -14,7 +14,7 @@ export interface TaskParams<T = unknown> {
   silent?: boolean;
 }
 
-export interface ITask<T = unknown, A extends [] = []> {
+export interface ITask<T = unknown, A extends Array<unknown> = unknown[]> {
   startedAt?: number;
   endedAt?: number;
   stoppedAt?: number;
@@ -50,6 +50,7 @@ export interface JobParams {
   name?: string;
   queueName?: string;
   execAsync?: boolean;
+  logger?: (str: string) => void;
 }
 
 export interface IJob {

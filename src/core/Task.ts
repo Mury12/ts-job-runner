@@ -1,8 +1,10 @@
 import { ITask, TaskHooks, TaskParams } from "../types";
 import { JobExecutionError } from "./JobExecutionError";
 
-export class Task<TExecResult = unknown, FnArgs extends [] = []>
-  implements ITask<TExecResult, FnArgs>
+export class Task<
+  TExecResult = unknown,
+  FnArgs extends Array<unknown> = unknown[]
+> implements ITask<TExecResult, FnArgs>
 {
   protected name?: string | undefined;
   protected _startedAt?: number | undefined;
@@ -17,7 +19,6 @@ export class Task<TExecResult = unknown, FnArgs extends [] = []>
 
   constructor(
     fn: (...args: FnArgs) => TExecResult | Promise<TExecResult>,
-    fnArgs?: Parameters<typeof fn>,
     params?: TaskParams
   ) {
     if (!fn || typeof fn !== "function") {

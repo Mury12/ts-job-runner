@@ -5,7 +5,7 @@ import { Task } from "./Task";
 
 export class Job implements IJob {
   readonly name?: string;
-  protected queue: Queue<Task>;
+  protected queue: Queue<{ task: Task; args: unknown[] }>;
   protected _startedAt: number = 0;
   protected _endedAt: number = 0;
   protected _stoppedAt?: number | undefined;
@@ -13,28 +13,33 @@ export class Job implements IJob {
   protected _hasErrors: JobExecutionError[] = [];
   protected hooks: JobHooks = {};
   protected execAsync?: boolean;
+  private logger: (str: string) => void;
 
   constructor(params?: JobParams) {
     this.name = params?.name;
     this.execAsync = params?.execAsync;
-
-    this.queue = new Queue<Task>(params?.queueName);
+    this.logger = params?.logger || console.log;
+    this.queue = new Queue(params?.queueName);
   }
 
-  addTask(...tasks: Task[]): void {
-    this.queue.push(...tasks);
+  addTask(task: Task<any, any[]>, ...fnArgs: unknown[]): void {
+    task.addHook("onError", (err) => {
+      this._hasErrors.push(err);
+    });
+
+    this.queue.push({ task, args: fnArgs });
   }
 
   async run() {
-    console.log(`Starting job ${this.name}`);
+    this.logger(`[${this.name}] job starting...`);
     this._startedAt = Date.now();
 
     await this.hooks.beforeAll?.();
     while (this.queue.next()) {
-      const task = this.queue.current;
+      const queue = this.queue.current;
       try {
         await this.hooks.beforeEach?.();
-        await task.run();
+        await queue.task.run(...queue.args);
         await this.hooks.onSuccess?.();
       } catch (error) {
         let jobError = error;
@@ -51,10 +56,10 @@ export class Job implements IJob {
     await this.hooks.onFinish?.();
     this._endedAt = Date.now();
 
-    console.log(
-      `Finished job ${this.name}`,
-      (this.endedAt - this.startedAt) / 1000,
-      "s"
+    this.logger(
+      `[${this.name}] finished job within ${
+        (this.endedAt - this.startedAt) / 1000
+      }s`
     );
   }
 
