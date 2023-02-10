@@ -44,16 +44,22 @@ export class Task<
 
   async run(...args: FnArgs): Promise<TExecResult | undefined> {
     try {
+      this._startedAt = Date.now();
+      this._isRunning = true;
       await this.hooks.beforeStart?.(this);
       this._results = await this.fn(...args);
       await this.hooks.onSuccess?.(this._results);
+      this._endedAt = Date.now();
       return this.results;
     } catch (error) {
-      const err = new JobExecutionError(error);
-      this.hooks.onError?.(err);
-      if (!this.silent) throw err;
+      const taskError = new JobExecutionError(error.message);
+      this.hasErrors?.push(taskError);
+      this.hooks.onError?.(taskError);
+      if (!this.silent) throw taskError;
     } finally {
+      this._stoppedAt = Date.now();
       this.hooks.onFinish?.();
+      this._isRunning = false;
     }
   }
 

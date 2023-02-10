@@ -43,6 +43,7 @@ export class Job implements IJob {
         const results = await queue.task.run(...queue.args);
         this.results.push(results);
       } catch (error) {
+        this._stoppedAt = Date.now();
         let jobError = error;
         if (!(error instanceof JobExecutionError)) {
           jobError = new JobExecutionError(error.message);
@@ -60,7 +61,7 @@ export class Job implements IJob {
 
     this.logger(
       `[${this.name}] finished job within ${
-        (this.endedAt - this.startedAt) / 1000
+        (this.endedAt || this.stoppedAt || Date.now() - this.startedAt) / 1000
       }s`
     );
   }
