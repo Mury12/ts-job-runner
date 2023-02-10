@@ -1,6 +1,7 @@
 import { Task } from "./core/Task";
 import { JobExecutionError } from "./core/JobExecutionError";
 import { Queue } from "./core/Queue";
+import { Job } from "./core/Job";
 
 export interface TaskHooks {
   onFinish?: () => void | Promise<void>;
@@ -35,7 +36,7 @@ export interface IQueue<T> {
 
 export interface JobHooks {
   onSuccess?: <T = unknown[]>(result: T) => void | Promise<void>;
-  beforeStart?: () => void | Promise<void>;
+  beforeStart?: (job: Job) => void | Promise<void>;
   onError?: (error: JobExecutionError) => void | Promise<void>;
   beforeAll?: () => void | Promise<void>;
   beforeEach?: (task: Task) => void | Promise<void>;
