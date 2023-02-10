@@ -6,7 +6,7 @@ export class Task<
   FnArgs extends Array<unknown> = unknown[]
 > implements ITask<TExecResult, FnArgs>
 {
-  protected name?: string | undefined;
+  readonly name?: string | undefined;
   protected _startedAt?: number | undefined;
   protected _endedAt?: number | undefined;
   protected _stoppedAt?: number | undefined;
