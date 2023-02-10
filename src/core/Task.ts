@@ -31,7 +31,10 @@ export class Task<
     this.fn = fn;
   }
 
-  addHook(hook: keyof TaskHooks, fn: TaskHooks[typeof hook]): void {
+  addHook(
+    hook: keyof TaskHooks,
+    fn: TaskHooks[typeof hook]
+  ): Task<TExecResult, FnArgs> {
     if (!fn || typeof fn !== "function") {
       new JobExecutionError(`Param 'fn' is not a function`);
     }
@@ -40,6 +43,8 @@ export class Task<
       ...this.hooks,
       [hook]: fn,
     };
+
+    return this;
   }
 
   async run(...args: FnArgs): Promise<TExecResult | undefined> {

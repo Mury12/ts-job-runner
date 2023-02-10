@@ -23,12 +23,13 @@ export class Job implements IJob {
     this.queue = new Queue(params?.queueName);
   }
 
-  addTask(task: Task<any, any[]>, ...fnArgs: unknown[]): void {
+  addTask(task: Task<any, any[]>, ...fnArgs: unknown[]): Job {
     task.addHook("onError", (err) => {
       this._hasErrors.push(err);
     });
 
     this.queue.push({ task, args: fnArgs });
+    return this;
   }
 
   async run() {
@@ -66,7 +67,7 @@ export class Job implements IJob {
     );
   }
 
-  addHook(hook: keyof JobHooks, fn: JobHooks[typeof hook]): void {
+  addHook(hook: keyof JobHooks, fn: JobHooks[typeof hook]): Job {
     if (!fn || typeof fn !== "function") {
       new JobExecutionError(`Param 'fn' is not a function`);
     }
@@ -75,6 +76,8 @@ export class Job implements IJob {
       ...this.hooks,
       [hook]: fn,
     };
+
+    return this;
   }
 
   stop(): void {
