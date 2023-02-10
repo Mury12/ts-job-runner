@@ -35,7 +35,7 @@ export class Job implements IJob {
   async run() {
     this.logger(`[${this.name}] job starting...`);
     this._startedAt = Date.now();
-
+    await this.hooks.beforeStart?.(this);
     await this.hooks.beforeAll?.();
     while (this.queue.next()) {
       const queue = this.queue.current;
