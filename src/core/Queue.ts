@@ -4,7 +4,7 @@ import { Task } from "./Task";
 export class Queue<T> implements IQueue<T> {
   readonly name?: string;
   protected _current: T;
-  protected list: T[] = [];
+  protected _list: T[] = [];
   protected _executed: T[] = [];
 
   constructor(name?: string) {
@@ -16,7 +16,7 @@ export class Queue<T> implements IQueue<T> {
   }
 
   next(): T | undefined {
-    const next = this.list.shift();
+    const next = this._list.shift();
 
     if (this._current) {
       this._executed.push(this._current);
@@ -39,5 +39,9 @@ export class Queue<T> implements IQueue<T> {
 
   get executed() {
     return this._executed;
+  }
+
+  get list() {
+    return this._list
   }
 }

@@ -4,8 +4,8 @@ import { Queue } from "./core/Queue";
 
 export interface TaskHooks {
   onFinish?: () => void | Promise<void>;
-  onSuccess?: () => void | Promise<void>;
-  beforeStart?: () => void | Promise<void>;
+  onSuccess?: <T>(result: T) => void | Promise<void>;
+  beforeStart?: (task: ITask) => void | Promise<void>;
   onError?: (error: JobExecutionError) => void | Promise<void>;
 }
 
@@ -34,16 +34,19 @@ export interface IQueue<T> {
 }
 
 export interface JobHooks {
-  onSuccess?: () => void | Promise<void>;
+  onSuccess?: <T = unknown[]>(result: T) => void | Promise<void>;
   beforeStart?: () => void | Promise<void>;
   onError?: (error: JobExecutionError) => void | Promise<void>;
   beforeAll?: () => void | Promise<void>;
-  beforeEach?: () => void | Promise<void>;
+  beforeEach?: (task: Task) => void | Promise<void>;
   beforeClose?: () => void | Promise<void>;
-  afterEach?: () => void | Promise<void>;
+  afterEach?: (task: Task) => void | Promise<void>;
   afterAll?: () => void | Promise<void>;
   afterClose?: () => void | Promise<void>;
-  onFinish?: () => void | Promise<void>;
+  onFinish?: <T = unknown[]>(
+    errors: JobExecutionError[],
+    results: T
+  ) => void | Promise<void>;
 }
 
 export interface JobParams {

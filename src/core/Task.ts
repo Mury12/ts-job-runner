@@ -44,9 +44,9 @@ export class Task<
 
   async run(...args: FnArgs): Promise<TExecResult | undefined> {
     try {
-      await this.hooks.beforeStart?.();
+      await this.hooks.beforeStart?.(this);
       this._results = await this.fn(...args);
-      await this.hooks.onSuccess?.();
+      await this.hooks.onSuccess?.(this._results);
       return this.results;
     } catch (error) {
       const err = new JobExecutionError(error);

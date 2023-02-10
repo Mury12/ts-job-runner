@@ -13,6 +13,7 @@ export class Job implements IJob {
   protected _hasErrors: JobExecutionError[] = [];
   protected hooks: JobHooks = {};
   protected execAsync?: boolean;
+  protected results: unknown[] = [];
   private logger: (str: string) => void;
 
   constructor(params?: JobParams) {
@@ -38,9 +39,9 @@ export class Job implements IJob {
     while (this.queue.next()) {
       const queue = this.queue.current;
       try {
-        await this.hooks.beforeEach?.();
-        await queue.task.run(...queue.args);
-        await this.hooks.onSuccess?.();
+        await this.hooks.beforeEach?.(queue.task);
+        const results = await queue.task.run(...queue.args);
+        this.results.push(results);
       } catch (error) {
         let jobError = error;
         if (!(error instanceof JobExecutionError)) {
@@ -49,11 +50,12 @@ export class Job implements IJob {
         this._hasErrors?.push(jobError);
         await this.hooks.onError?.(jobError);
       } finally {
-        await this.hooks.afterEach?.();
+        await this.hooks.afterEach?.(queue.task);
       }
     }
+    if (!this.hasErrors.length) await this.hooks.onSuccess?.(this.results);
     await this.hooks.afterAll?.();
-    await this.hooks.onFinish?.();
+    await this.hooks.onFinish?.(this.hasErrors, this.results);
     this._endedAt = Date.now();
 
     this.logger(
