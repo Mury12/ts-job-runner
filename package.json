@@ -1,5 +1,5 @@
 {
-  "name": "job-runner",
+  "name": "simple-ts-job-runner",
   "version": "1.0.0",
   "description": "Simple NodeJS Job executor",
   "main": "index.ts",
