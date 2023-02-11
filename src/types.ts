@@ -1,6 +1,5 @@
 import { Task } from "./core/Task";
 import { JobExecutionError } from "./core/JobExecutionError";
-import { Queue } from "./core/Queue";
 import { Job } from "./core/Job";
 
 export interface TaskHooks {
@@ -26,6 +25,23 @@ export interface ITask<T = unknown, A extends Array<unknown> = unknown[]> {
   run(...args: A): Promise<T | undefined>;
 
   addHook(hook: keyof TaskHooks, fn: TaskHooks[typeof hook]): void;
+
+  addHook(
+    hook: "onSuccess",
+    fn: <T = unknown[]>(result: T) => void | Promise<void>
+  ): void;
+
+  addHook(
+    hook: "beforeStart",
+    fn: (task: Task<T, A>) => void | Promise<void>
+  ): void;
+
+  addHook(
+    hook: "onError",
+    fn: (error: JobExecutionError) => void | Promise<void>
+  ): void;
+
+  addHook(hook: "onError", fn: () => void | Promise<void>);
 }
 
 export interface IQueue<T> {
@@ -66,6 +82,39 @@ export interface IJob {
 
   run(): void;
   addHook(hook: keyof JobHooks, fn: JobHooks[typeof hook]): void;
+
+  addHook(
+    hook: "onSuccess",
+    fn: <T = unknown[]>(result: T) => void | Promise<void>
+  ): void;
+
+  addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): void;
+
+  addHook(
+    hook: "onError",
+    fn: (error: JobExecutionError) => void | Promise<void>
+  ): void;
+
+  addHook(hook: "beforeAll", fn: () => void | Promise<void>): void;
+
+  addHook(hook: "beforeEach", fn: (task: Task) => void | Promise<void>): void;
+
+  addHook(hook: "beforeClose", fn: () => void | Promise<void>): void;
+
+  addHook(hook: "afterEach", fn: (task: Task) => void | Promise<void>): void;
+
+  addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): void;
+
+  addHook(hook: "afterClose", fn: () => void | Promise<void>): void;
+
+  addHook(
+    hook: "onFinish",
+    fn: <T = unknown[]>(
+      errors: JobExecutionError[],
+      results: T
+    ) => void | Promise<void>
+  ): void;
+
   addTask(task: Task | Task[]): void;
   stop(): void;
 }
