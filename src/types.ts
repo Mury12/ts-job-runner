@@ -24,8 +24,6 @@ export interface ITask<T = unknown, A extends Array<unknown> = unknown[]> {
 
   run(...args: A): Promise<T | undefined>;
 
-  addHook(hook: keyof TaskHooks, fn: TaskHooks[typeof hook]): void;
-
   addHook(
     hook: "onSuccess",
     fn: <T = unknown[]>(result: T) => void | Promise<void>
@@ -81,7 +79,6 @@ export interface IJob {
   hasErrors?: JobExecutionError[];
 
   run(): void;
-  addHook(hook: keyof JobHooks, fn: JobHooks[typeof hook]): void;
 
   addHook(
     hook: "onSuccess",
