@@ -61,7 +61,7 @@ export class Job implements IJob {
       }
     }
     if (!this.hasErrors.length) await this.hooks.onSuccess?.(this.results);
-    await this.hooks.afterAll?.();
+    await this.hooks.afterAll?.(this);
     await this.hooks.onFinish?.(this.hasErrors, this.results);
     this._endedAt = Date.now();
 

@@ -42,7 +42,7 @@ export interface JobHooks {
   beforeEach?: (task: Task) => void | Promise<void>;
   beforeClose?: () => void | Promise<void>;
   afterEach?: (task: Task) => void | Promise<void>;
-  afterAll?: () => void | Promise<void>;
+  afterAll?: (job: Job) => void | Promise<void>;
   afterClose?: () => void | Promise<void>;
   onFinish?: <T = unknown[]>(
     errors: JobExecutionError[],
