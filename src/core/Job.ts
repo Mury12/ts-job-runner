@@ -14,6 +14,7 @@ export class Job implements IJob {
   protected hooks: JobHooks = {};
   protected execAsync?: boolean;
   protected results: unknown[] = [];
+  protected shouldStop: boolean;
   private logger: (str: string) => void;
 
   constructor(params?: JobParams) {
@@ -53,6 +54,10 @@ export class Job implements IJob {
         await this.hooks.onError?.(jobError);
       } finally {
         await this.hooks.afterEach?.(queue.task);
+        if (this.shouldStop) {
+          this._stoppedAt = Date.now();
+          break;
+        }
       }
     }
     if (!this.hasErrors.length) await this.hooks.onSuccess?.(this.results);
@@ -60,11 +65,21 @@ export class Job implements IJob {
     await this.hooks.onFinish?.(this.hasErrors, this.results);
     this._endedAt = Date.now();
 
-    this.logger(
-      `[${this.name}] finished job within ${
-        (this.endedAt || this.stoppedAt || Date.now() - this.startedAt) / 1000
-      }s`
-    );
+    if (this.stoppedAt) {
+      this.logger(
+        `[${this.name}] stopped within ${
+          ((this.stoppedAt || Date.now()) - this.startedAt) / 1000
+        }s at ${new Date(this.stoppedAt)} with ${
+          this._hasErrors.length
+        } errors.`
+      );
+    } else {
+      this.logger(
+        `[${this.name}] finished job within ${
+          ((this.endedAt || Date.now()) - this.startedAt) / 1000
+        }s`
+      );
+    }
   }
 
   addHook(hook: keyof JobHooks, fn: JobHooks[typeof hook]): Job {
@@ -81,7 +96,8 @@ export class Job implements IJob {
   }
 
   stop(): void {
-    throw new Error("Method not implemented.");
+    this.shouldStop = true;
+    this.logger("Process queue set to stop after the current job.");
   }
 
   get hasErrors() {
