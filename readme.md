@@ -28,7 +28,7 @@ Hooks can be used to fulfill the job lifetime, those are:
 ### Prepare and run a Job
 
 ```ts
-import { Job, Task } from "mury12/job-runner";
+import { Job, Task } from "simple-ts-job-runner";
 
 function sum(a, b) {
   return a + b;
@@ -66,7 +66,7 @@ job
 ### Run a Task
 
 ```ts
-import { Task } from "mury12/job-runner";
+import { Task } from "simple-ts-job-runner";
 // You can use an async function or `.then`
 // And can also use hooks:
 // onFinish, onSuccess(result), beforeStart(task), and onError(error)
