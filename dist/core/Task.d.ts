@@ -6,7 +6,7 @@ export declare class Task<TExecResult = unknown, FnArgs extends Array<unknown> =
     protected _endedAt?: number | undefined;
     protected _stoppedAt?: number | undefined;
     protected _isRunning: boolean;
-    protected _hasErrors?: JobExecutionError[] | undefined;
+    protected _hasErrors?: JobExecutionError[];
     protected _results?: TExecResult;
     protected silent: boolean;
     protected hooks: TaskHooks;

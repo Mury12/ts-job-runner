@@ -55,7 +55,7 @@ job
     console.log(`Finished task ${task.name}. Results:`);
     console.log(task.results);
   })
-  .addHook("onFinish", (job: Job) => {
+  .addHook("afterAll", (job: Job) => {
     SomeService.notify(`Job ${job.name} finished`);
   })
   .run(); // Job run is async

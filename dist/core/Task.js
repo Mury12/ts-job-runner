@@ -4,6 +4,7 @@ exports.Task = void 0;
 const JobExecutionError_1 = require("./JobExecutionError");
 class Task {
     constructor(fn, params) {
+        this._hasErrors = [];
         this.hooks = {};
         if (!fn || typeof fn !== "function") {
             throw new JobExecutionError_1.JobExecutionError(`Param 'fn' is not a function, cannot be executed.`);
