@@ -28,7 +28,7 @@ export declare class Job implements IJob {
     addHook(hook: "afterEach", fn: (task: Task<unknown, unknown[]>) => void | Promise<void>): this;
     addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): this;
     addHook(hook: "afterClose", fn: () => void | Promise<void>): this;
-    addHook(hook: "onFinish", fn: <T = unknown[]>(errors: JobExecutionError[], results: T) => void | Promise<void>): void;
+    addHook(hook: "onFinish", fn: <T = unknown[]>(errors: JobExecutionError[], results: T) => void | Promise<void>): this;
     addTask(task: Task<any, any[]>, ...fnArgs: unknown[]): Job;
     run(): Promise<void>;
     stop(): void;

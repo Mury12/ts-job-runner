@@ -50,7 +50,7 @@ export class Job implements IJob {
       errors: JobExecutionError[],
       results: T
     ) => void | Promise<void>
-  ): void;
+  ): this;
 
   /**
    * Add a hook to the job.
