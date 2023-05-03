@@ -1,6 +1,6 @@
 {
   "name": "simple-ts-job-runner",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Simple NodeJS Job executor",
   "main": "dist/index.js",
   "repository": "https://github.com/Mury12/ts-job-runner",
