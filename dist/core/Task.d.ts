@@ -12,10 +12,10 @@ export declare class Task<TExecResult = unknown, FnArgs extends Array<unknown> =
     protected hooks: TaskHooks;
     protected fn: (...args: FnArgs) => TExecResult | Promise<TExecResult>;
     constructor(fn: (...args: FnArgs) => TExecResult | Promise<TExecResult>, params?: TaskParams);
-    addHook(hook: "onSuccess", fn: <T = unknown[]>(result: T) => void | Promise<void>): void;
-    addHook(hook: "beforeStart", fn: (task: Task<TExecResult, FnArgs>) => void | Promise<void>): void;
-    addHook(hook: "onError", fn: (error: JobExecutionError) => void | Promise<void>): void;
-    addHook(hook: "onError", fn: () => void | Promise<void>): void;
+    addHook(hook: "onSuccess", fn: <T = unknown[]>(result: T) => void | Promise<void>): this;
+    addHook(hook: "beforeStart", fn: (task: Task<TExecResult, FnArgs>) => void | Promise<void>): this;
+    addHook(hook: "onError", fn: (error: JobExecutionError) => void | Promise<void>): this;
+    addHook(hook: "onError", fn: () => void | Promise<void>): this;
     run(...args: FnArgs): Promise<TExecResult | undefined>;
     get startedAt(): number;
     get endedAt(): number;

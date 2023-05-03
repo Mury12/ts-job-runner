@@ -19,10 +19,10 @@ export interface ITask<T = unknown, A extends Array<unknown> = unknown[]> {
     hasErrors?: JobExecutionError[];
     results?: T;
     run(...args: A): Promise<T | undefined>;
-    addHook(hook: "onSuccess", fn: <T = unknown[]>(result: T) => void | Promise<void>): void;
-    addHook(hook: "beforeStart", fn: (task: Task<T, A>) => void | Promise<void>): void;
-    addHook(hook: "onError", fn: (error: JobExecutionError) => void | Promise<void>): void;
-    addHook(hook: "onError", fn: () => void | Promise<void>): any;
+    addHook(hook: "onSuccess", fn: <T = unknown[]>(result: T) => void | Promise<void>): Task;
+    addHook(hook: "beforeStart", fn: (task: Task<T, A>) => void | Promise<void>): Task;
+    addHook(hook: "onError", fn: (error: JobExecutionError) => void | Promise<void>): Task;
+    addHook(hook: "onError", fn: () => void | Promise<void>): Task;
 }
 export interface IQueue<T> {
     length: number;
@@ -54,15 +54,15 @@ export interface IJob {
     isRunning: boolean;
     hasErrors?: JobExecutionError[];
     run(): void;
-    addHook(hook: "onSuccess", fn: <T = unknown[]>(result: T) => void | Promise<void>): void;
-    addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): void;
-    addHook(hook: "onError", fn: (error: JobExecutionError) => void | Promise<void>): void;
-    addHook(hook: "beforeAll", fn: () => void | Promise<void>): void;
-    addHook(hook: "beforeEach", fn: (task: Task) => void | Promise<void>): void;
-    addHook(hook: "beforeClose", fn: () => void | Promise<void>): void;
-    addHook(hook: "afterEach", fn: (task: Task) => void | Promise<void>): void;
-    addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): void;
-    addHook(hook: "afterClose", fn: () => void | Promise<void>): void;
+    addHook(hook: "onSuccess", fn: <T = unknown[]>(result: T) => void | Promise<void>): Job;
+    addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): Job;
+    addHook(hook: "onError", fn: (error: JobExecutionError) => void | Promise<void>): Job;
+    addHook(hook: "beforeAll", fn: () => void | Promise<void>): Job;
+    addHook(hook: "beforeEach", fn: (task: Task) => void | Promise<void>): Job;
+    addHook(hook: "beforeClose", fn: () => void | Promise<void>): Job;
+    addHook(hook: "afterEach", fn: (task: Task) => void | Promise<void>): Job;
+    addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): Job;
+    addHook(hook: "afterClose", fn: () => void | Promise<void>): Job;
     addHook(hook: "onFinish", fn: <T = unknown[]>(errors: JobExecutionError[], results: T) => void | Promise<void>): void;
     addTask(task: Task | Task[]): void;
     stop(): void;
