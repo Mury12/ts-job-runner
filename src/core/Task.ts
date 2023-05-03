@@ -30,6 +30,19 @@ export class Task<
     this.name = params?.name;
     this.fn = fn;
   }
+  addHook(
+    hook: "onSuccess",
+    fn: <T = unknown[]>(result: T) => void | Promise<void>
+  ): void;
+  addHook(
+    hook: "beforeStart",
+    fn: (task: Task<TExecResult, FnArgs>) => void | Promise<void>
+  ): void;
+  addHook(
+    hook: "onError",
+    fn: (error: JobExecutionError) => void | Promise<void>
+  ): void;
+  addHook(hook: "onError", fn: () => void | Promise<void>): void;
 
   addHook(
     hook: keyof TaskHooks,

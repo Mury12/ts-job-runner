@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Queue = void 0;
 class Queue {
-    constructor(name) {
+    constructor(name, keepRuns = true) {
+        this.keepRuns = keepRuns;
         this._list = [];
         this._executed = [];
         this.name = name;
@@ -12,7 +13,7 @@ class Queue {
     }
     next() {
         const next = this._list.shift();
-        if (this._current) {
+        if (this._current && this.keepRuns) {
             this._executed.push(this._current);
         }
         if (next) {

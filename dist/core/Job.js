@@ -15,6 +15,22 @@ class Job {
         this.logger = params?.logger || console.log;
         this.queue = new Queue_1.Queue(params?.queueName);
     }
+    /**
+     * Add a hook to the job.
+     * @param hook
+     * @param fn
+     * @returns
+     */
+    addHook(hook, fn) {
+        if (!fn || typeof fn !== "function") {
+            new JobExecutionError_1.JobExecutionError(`Param 'fn' is not a function`);
+        }
+        this.hooks = {
+            ...this.hooks,
+            [hook]: fn,
+        };
+        return this;
+    }
     addTask(task, ...fnArgs) {
         task.addHook("onError", (err) => {
             this._hasErrors.push(err);
@@ -62,16 +78,6 @@ class Job {
         else {
             this.logger(`[${this.name}] finished job within ${((this.endedAt || Date.now()) - this.startedAt) / 1000}s`);
         }
-    }
-    addHook(hook, fn) {
-        if (!fn || typeof fn !== "function") {
-            new JobExecutionError_1.JobExecutionError(`Param 'fn' is not a function`);
-        }
-        this.hooks = {
-            ...this.hooks,
-            [hook]: fn,
-        };
-        return this;
     }
     stop() {
         this.shouldStop = true;

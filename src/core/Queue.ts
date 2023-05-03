@@ -7,7 +7,7 @@ export class Queue<T> implements IQueue<T> {
   protected _list: T[] = [];
   protected _executed: T[] = [];
 
-  constructor(name?: string) {
+  constructor(name?: string, private readonly keepRuns = true) {
     this.name = name;
   }
 
@@ -18,7 +18,7 @@ export class Queue<T> implements IQueue<T> {
   next(): T | undefined {
     const next = this._list.shift();
 
-    if (this._current) {
+    if (this._current && this.keepRuns) {
       this._executed.push(this._current);
     }
 
@@ -42,6 +42,6 @@ export class Queue<T> implements IQueue<T> {
   }
 
   get list() {
-    return this._list
+    return this._list;
   }
 }

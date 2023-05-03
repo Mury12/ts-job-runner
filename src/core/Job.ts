@@ -23,6 +23,53 @@ export class Job implements IJob {
     this.logger = params?.logger || console.log;
     this.queue = new Queue(params?.queueName);
   }
+  addHook(
+    hook: "onSuccess",
+    fn: <T = unknown[]>(result: T) => void | Promise<void>
+  ): void;
+  addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): void;
+  addHook(
+    hook: "onError",
+    fn: (error: JobExecutionError) => void | Promise<void>
+  ): void;
+  addHook(hook: "beforeAll", fn: () => void | Promise<void>): void;
+  addHook(
+    hook: "beforeEach",
+    fn: (task: Task<unknown, unknown[]>) => void | Promise<void>
+  ): void;
+  addHook(hook: "beforeClose", fn: () => void | Promise<void>): void;
+  addHook(
+    hook: "afterEach",
+    fn: (task: Task<unknown, unknown[]>) => void | Promise<void>
+  ): void;
+  addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): void;
+  addHook(hook: "afterClose", fn: () => void | Promise<void>): void;
+  addHook(
+    hook: "onFinish",
+    fn: <T = unknown[]>(
+      errors: JobExecutionError[],
+      results: T
+    ) => void | Promise<void>
+  ): void;
+
+  /**
+   * Add a hook to the job.
+   * @param hook
+   * @param fn
+   * @returns
+   */
+  addHook(hook: keyof JobHooks, fn: JobHooks[typeof hook]): Job {
+    if (!fn || typeof fn !== "function") {
+      new JobExecutionError(`Param 'fn' is not a function`);
+    }
+
+    this.hooks = {
+      ...this.hooks,
+      [hook]: fn,
+    };
+
+    return this;
+  }
 
   addTask(task: Task<any, any[]>, ...fnArgs: unknown[]): Job {
     task.addHook("onError", (err) => {
@@ -80,19 +127,6 @@ export class Job implements IJob {
         }s`
       );
     }
-  }
-
-  addHook(hook: keyof JobHooks, fn: JobHooks[typeof hook]): Job {
-    if (!fn || typeof fn !== "function") {
-      new JobExecutionError(`Param 'fn' is not a function`);
-    }
-
-    this.hooks = {
-      ...this.hooks,
-      [hook]: fn,
-    };
-
-    return this;
   }
 
   stop(): void {
