@@ -26,24 +26,24 @@ export class Job implements IJob {
   addHook(
     hook: "onSuccess",
     fn: <T = unknown[]>(result: T) => void | Promise<void>
-  ): void;
-  addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): void;
+  ): this;
+  addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): this;
   addHook(
     hook: "onError",
     fn: (error: JobExecutionError) => void | Promise<void>
-  ): void;
-  addHook(hook: "beforeAll", fn: () => void | Promise<void>): void;
+  ): this;
+  addHook(hook: "beforeAll", fn: () => void | Promise<void>): this;
   addHook(
     hook: "beforeEach",
     fn: (task: Task<unknown, unknown[]>) => void | Promise<void>
-  ): void;
-  addHook(hook: "beforeClose", fn: () => void | Promise<void>): void;
+  ): this;
+  addHook(hook: "beforeClose", fn: () => void | Promise<void>): this;
   addHook(
     hook: "afterEach",
     fn: (task: Task<unknown, unknown[]>) => void | Promise<void>
-  ): void;
-  addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): void;
-  addHook(hook: "afterClose", fn: () => void | Promise<void>): void;
+  ): this;
+  addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): this;
+  addHook(hook: "afterClose", fn: () => void | Promise<void>): this;
   addHook(
     hook: "onFinish",
     fn: <T = unknown[]>(

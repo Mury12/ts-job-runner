@@ -33,16 +33,16 @@ export class Task<
   addHook(
     hook: "onSuccess",
     fn: <T = unknown[]>(result: T) => void | Promise<void>
-  ): void;
+  ): this;
   addHook(
     hook: "beforeStart",
     fn: (task: Task<TExecResult, FnArgs>) => void | Promise<void>
-  ): void;
+  ): this;
   addHook(
     hook: "onError",
     fn: (error: JobExecutionError) => void | Promise<void>
-  ): void;
-  addHook(hook: "onError", fn: () => void | Promise<void>): void;
+  ): this;
+  addHook(hook: "onError", fn: () => void | Promise<void>): this;
 
   addHook(
     hook: keyof TaskHooks,

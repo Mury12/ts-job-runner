@@ -27,19 +27,19 @@ export interface ITask<T = unknown, A extends Array<unknown> = unknown[]> {
   addHook(
     hook: "onSuccess",
     fn: <T = unknown[]>(result: T) => void | Promise<void>
-  ): void;
+  ): Task;
 
   addHook(
     hook: "beforeStart",
     fn: (task: Task<T, A>) => void | Promise<void>
-  ): void;
+  ): Task;
 
   addHook(
     hook: "onError",
     fn: (error: JobExecutionError) => void | Promise<void>
-  ): void;
+  ): Task;
 
-  addHook(hook: "onError", fn: () => void | Promise<void>);
+  addHook(hook: "onError", fn: () => void | Promise<void>): Task;
 }
 
 export interface IQueue<T> {
@@ -83,26 +83,26 @@ export interface IJob {
   addHook(
     hook: "onSuccess",
     fn: <T = unknown[]>(result: T) => void | Promise<void>
-  ): void;
+  ): Job;
 
-  addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): void;
+  addHook(hook: "beforeStart", fn: (job: Job) => void | Promise<void>): Job;
 
   addHook(
     hook: "onError",
     fn: (error: JobExecutionError) => void | Promise<void>
-  ): void;
+  ): Job;
 
-  addHook(hook: "beforeAll", fn: () => void | Promise<void>): void;
+  addHook(hook: "beforeAll", fn: () => void | Promise<void>): Job;
 
-  addHook(hook: "beforeEach", fn: (task: Task) => void | Promise<void>): void;
+  addHook(hook: "beforeEach", fn: (task: Task) => void | Promise<void>): Job;
 
-  addHook(hook: "beforeClose", fn: () => void | Promise<void>): void;
+  addHook(hook: "beforeClose", fn: () => void | Promise<void>): Job;
 
-  addHook(hook: "afterEach", fn: (task: Task) => void | Promise<void>): void;
+  addHook(hook: "afterEach", fn: (task: Task) => void | Promise<void>): Job;
 
-  addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): void;
+  addHook(hook: "afterAll", fn: (job: Job) => void | Promise<void>): Job;
 
-  addHook(hook: "afterClose", fn: () => void | Promise<void>): void;
+  addHook(hook: "afterClose", fn: () => void | Promise<void>): Job;
 
   addHook(
     hook: "onFinish",
