@@ -13,7 +13,7 @@ export class Job implements IJob {
   protected _hasErrors: JobExecutionError[] = [];
   protected hooks: JobHooks = {};
   protected execAsync?: boolean;
-  protected results: unknown[] = [];
+  protected _results: unknown[] = [];
   protected shouldStop: boolean;
   private logger: (str: string) => void;
 
@@ -90,7 +90,7 @@ export class Job implements IJob {
       try {
         await this.hooks.beforeEach?.(queue.task);
         const results = await queue.task.run(...queue.args);
-        this.results.push(results);
+        this._results.push(results);
       } catch (error) {
         this._stoppedAt = Date.now();
         let jobError = error;
@@ -107,9 +107,9 @@ export class Job implements IJob {
         }
       }
     }
-    if (!this.hasErrors.length) await this.hooks.onSuccess?.(this.results);
+    if (!this.hasErrors.length) await this.hooks.onSuccess?.(this._results);
     await this.hooks.afterAll?.(this);
-    await this.hooks.onFinish?.(this.hasErrors, this.results);
+    await this.hooks.onFinish?.(this.hasErrors, this._results);
     this._endedAt = Date.now();
 
     if (this.stoppedAt) {
@@ -148,5 +148,8 @@ export class Job implements IJob {
   }
   get isRunning() {
     return this._isRunning;
+  }
+  get results() {
+    return this._results;
   }
 }
