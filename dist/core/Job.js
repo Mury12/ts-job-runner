@@ -9,7 +9,7 @@ class Job {
         this._endedAt = 0;
         this._hasErrors = [];
         this.hooks = {};
-        this.results = [];
+        this._results = [];
         this.name = params?.name;
         this.execAsync = params?.execAsync;
         this.logger = params?.logger || console.log;
@@ -48,7 +48,7 @@ class Job {
             try {
                 await this.hooks.beforeEach?.(queue.task);
                 const results = await queue.task.run(...queue.args);
-                this.results.push(results);
+                this._results.push(results);
             }
             catch (error) {
                 this._stoppedAt = Date.now();
@@ -68,9 +68,9 @@ class Job {
             }
         }
         if (!this.hasErrors.length)
-            await this.hooks.onSuccess?.(this.results);
+            await this.hooks.onSuccess?.(this._results);
         await this.hooks.afterAll?.(this);
-        await this.hooks.onFinish?.(this.hasErrors, this.results);
+        await this.hooks.onFinish?.(this.hasErrors, this._results);
         this._endedAt = Date.now();
         if (this.stoppedAt) {
             this.logger(`[${this.name}] stopped within ${((this.stoppedAt || Date.now()) - this.startedAt) / 1000}s at ${new Date(this.stoppedAt)} with ${this._hasErrors.length} errors.`);
@@ -97,6 +97,9 @@ class Job {
     }
     get isRunning() {
         return this._isRunning;
+    }
+    get results() {
+        return this._results;
     }
 }
 exports.Job = Job;

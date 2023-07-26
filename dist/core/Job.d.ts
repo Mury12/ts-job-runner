@@ -15,7 +15,7 @@ export declare class Job implements IJob {
     protected _hasErrors: JobExecutionError[];
     protected hooks: JobHooks;
     protected execAsync?: boolean;
-    protected results: unknown[];
+    protected _results: unknown[];
     protected shouldStop: boolean;
     private logger;
     constructor(params?: JobParams);
@@ -37,4 +37,5 @@ export declare class Job implements IJob {
     get endedAt(): number;
     get stoppedAt(): number;
     get isRunning(): boolean;
+    get results(): unknown[];
 }
